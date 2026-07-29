@@ -10,7 +10,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
 import * as Yup from "yup";
 
 const validationSchema = Yup.object({
@@ -38,7 +37,6 @@ const validationSchema = Yup.object({
 
 export default function Onboarding() {
   const [step, setStep] = useState(0);
-  const user = useSelector((state: any) => state.auth.user);
   const [CreateProfile, { isLoading }] = useCreateProfileMutation();
   const router = useRouter();
 
@@ -115,7 +113,7 @@ export default function Onboarding() {
       <div className="lg:col-span-9 lg:max-w-lg mx-auto lg:flex lg:items-center lg:justify-center py-16 p-6 lg:p-6">
         <Formik
           initialValues={{
-            user_id: user?.id,
+            user_id: "",
             whatsapp: "",
             city: "",
             country_code: "",

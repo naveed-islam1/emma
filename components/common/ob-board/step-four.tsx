@@ -15,7 +15,7 @@ import { getFullName } from "@/utils/getFullName";
 import useScrapDoctorStore from "@/zustand/scrapDoctorText";
 import { ErrorMessage, useFormikContext } from "formik";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 type FormValues = {
@@ -35,7 +35,6 @@ export default function StepFour({ setStep, total = 4 }: Props) {
     useFormikContext<FormValues>();
   const { values: signUpValues } = useScrapDoctorStore();
   const [SignupUser, { isLoading: signupLoading }] = useSignupUserMutation();
-  const user = useSelector((state: any) => state.auth.user);
   const dispatch = useDispatch();
 
   const handleNext = async () => {
@@ -44,12 +43,6 @@ export default function StepFour({ setStep, total = 4 }: Props) {
     setTouched({ specialty: true });
 
     if (errors.specialty) return;
-
-    if (user?.id) {
-      await setFieldValue("user_id", user.id);
-      setStep((prev) => (prev + 1) % total);
-      return;
-    }
 
     try {
       const signupRes = await SignupUser({
@@ -64,7 +57,9 @@ export default function StepFour({ setStep, total = 4 }: Props) {
       }).unwrap();
 
       dispatch(authuser(signupRes?.user));
-      localStorage.setItem("token", signupRes?.user?.access_token);
+      if (signupRes?.session?.access_token) {
+        localStorage.setItem("token", signupRes.session.access_token);
+      }
       localStorage.setItem("user", JSON.stringify(signupRes?.user));
       await setFieldValue("user_id", signupRes?.user?.id);
       setStep((prev) => (prev + 1) % total);
