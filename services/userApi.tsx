@@ -45,26 +45,6 @@ export const userApi = createApi({
             };
           }
 
-          if (!authData.user) {
-            return {
-              error: {
-                status: "CUSTOM_ERROR",
-                error: "Account could not be created. Please try again.",
-              },
-            };
-          }
-
-          // Supabase can return an obfuscated success response for an existing
-          // email when email confirmation is enabled.
-          if (authData.user.identities?.length === 0) {
-            return {
-              error: {
-                status: "CUSTOM_ERROR",
-                error: "An account with this email already exists.",
-              },
-            };
-          }
-
           return {
             data: {
               user: authData.user,
