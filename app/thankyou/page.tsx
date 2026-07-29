@@ -5,21 +5,30 @@ import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { getToken } from "@/utils/helper";
+import { createClient } from "@/utils/supabaseClient";
 
 const POLL_INTERVAL_MS = 1500;
 const MAX_POLL_ATTEMPTS = 20;
 
-type PageState = "checking" | "approved" | "error";
+type PageState = "checking" | "approved" | "error" | "session-required";
 
 export default function ThankYou() {
   const router = useRouter();
   const [pageState, setPageState] = useState<PageState>("checking");
 
   const checkVerificationStatus = useCallback(async () => {
-    const token = getToken();
+    let token = getToken();
 
     if (!token) {
-      router.replace("/signin");
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      token = session?.access_token ?? null;
+    }
+
+    if (!token) {
+      setPageState("session-required");
       return;
     }
 
@@ -56,7 +65,7 @@ export default function ThankYou() {
         }
 
         if (response.status === 401) {
-          router.replace("/signin");
+          setPageState("session-required");
           return;
         }
 
@@ -117,6 +126,28 @@ export default function ThankYou() {
           >
             Check Again
           </button>
+        </div>
+      </section>
+    );
+  }
+
+  if (pageState === "session-required") {
+    return (
+      <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-[#EDE0FF] px-4">
+        <div className="bg-white shadow-xl rounded-2xl p-8 md:p-12 max-w-xl w-full text-center">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+            Sign in required
+          </h1>
+          <p className="text-gray-600 mb-8">
+            Your login session was not found on this domain. Sign in again to
+            check your verification result.
+          </p>
+          <Link
+            href="/signin"
+            className="inline-block bg-purple-600 hover:bg-purple-700 transition text-white font-semibold px-6 py-3 rounded-lg shadow-md"
+          >
+            Sign In
+          </Link>
         </div>
       </section>
     );
