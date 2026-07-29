@@ -2,6 +2,9 @@
 
 const projectId = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID;
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ||
+  (projectId ? `https://${projectId}.supabase.co` : "");
 
 const nextConfig = {
   reactStrictMode: true,
@@ -30,7 +33,7 @@ const nextConfig = {
               
               connect-src 'self'
                 ${backendUrl}
-                https://${projectId}.supabase.co
+                ${supabaseUrl}
                 https://api.stripe.com
                 https://*.stripe.com
                 http://localhost:4000

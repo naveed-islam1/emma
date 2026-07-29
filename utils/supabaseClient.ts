@@ -2,8 +2,10 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 export function createClient() {
-  const projectId = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID!;
-  const SUPABASE_URL = `https://${projectId}.supabase.co`;
+  const projectId = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID;
+  const SUPABASE_URL =
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    (projectId ? `https://${projectId}.supabase.co` : undefined);
   const publicAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   let supabaseInstance: ReturnType<typeof createSupabaseClient> | null = null;
@@ -16,7 +18,7 @@ export function createClient() {
 
   if (!SUPABASE_URL || !publicAnonKey) {
     throw new Error(
-      "❌ Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment variables."
+      "Missing NEXT_PUBLIC_SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_PROJECT_ID) or NEXT_PUBLIC_SUPABASE_ANON_KEY."
     );
   }
   try {
@@ -35,7 +37,7 @@ export function createClient() {
     ) {
       throw new Error(
         `Supabase key validation failed: ${errorMsg}\n\n` +
-          "Please check that VITE_SUPABASE_ANON_KEY is set correctly in your Vercel environment variables."
+          "Please check that NEXT_PUBLIC_SUPABASE_ANON_KEY is set correctly in your Vercel environment variables."
       );
     }
     throw error;

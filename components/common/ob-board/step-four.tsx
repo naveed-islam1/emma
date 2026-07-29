@@ -69,7 +69,12 @@ export default function StepFour({ setStep, total = 4 }: Props) {
       await setFieldValue("user_id", signupRes?.user?.id);
       setStep((prev) => (prev + 1) % total);
     } catch (err: any) {
-      toast.error(err?.data?.message || err?.message || "Something went wrong");
+      toast.error(
+        err?.data?.message ||
+          err?.error ||
+          err?.message ||
+          "Account creation failed"
+      );
     }
   };
 
