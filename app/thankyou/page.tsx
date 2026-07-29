@@ -1,8 +1,127 @@
 "use client";
 
 import Link from "next/link";
+import { Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { getToken } from "@/utils/helper";
+
+const POLL_INTERVAL_MS = 1500;
+const MAX_POLL_ATTEMPTS = 20;
+
+type PageState = "checking" | "approved" | "error";
 
 export default function ThankYou() {
+  const router = useRouter();
+  const [pageState, setPageState] = useState<PageState>("checking");
+
+  const checkVerificationStatus = useCallback(async () => {
+    const token = getToken();
+
+    if (!token) {
+      router.replace("/signin");
+      return;
+    }
+
+    setPageState("checking");
+
+    for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt += 1) {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/veriff/status`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "ngrok-skip-browser-warning": "1",
+            },
+            cache: "no-store",
+          },
+        );
+
+        const result = await response.json();
+
+        if (result.code === "VERIFICATION_APPROVED") {
+          setPageState("approved");
+          return;
+        }
+
+        if (
+          result.code === "NAME_MISMATCH" ||
+          result.code === "VERIFICATION_DECLINED" ||
+          result.code === "NO_VERIFICATION"
+        ) {
+          router.replace("/document-failed");
+          return;
+        }
+
+        if (response.status === 401) {
+          router.replace("/signin");
+          return;
+        }
+
+        if (result.code !== "VERIFICATION_PENDING") {
+          setPageState("error");
+          return;
+        }
+      } catch (error) {
+        console.error("[veriff][status] request failed:", error);
+
+        if (attempt === MAX_POLL_ATTEMPTS - 1) {
+          setPageState("error");
+          return;
+        }
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+    }
+
+    // Do not show a false success when the webhook is still delayed.
+    setPageState("error");
+  }, [router]);
+
+  useEffect(() => {
+    checkVerificationStatus();
+  }, [checkVerificationStatus]);
+
+  if (pageState === "checking") {
+    return (
+      <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-[#EDE0FF] px-4">
+        <div className="bg-white shadow-xl rounded-2xl p-8 md:p-12 max-w-xl w-full text-center">
+          <Loader className="w-10 h-10 mx-auto mb-6 text-purple-600 animate-spin" />
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+            Confirming verification...
+          </h1>
+          <p className="text-gray-600">
+            Please wait while we confirm your verification status.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  if (pageState === "error") {
+    return (
+      <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-[#EDE0FF] px-4">
+        <div className="bg-white shadow-xl rounded-2xl p-8 md:p-12 max-w-xl w-full text-center">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+            Verification is taking longer than expected
+          </h1>
+          <p className="text-gray-600 mb-8">
+            We could not confirm your status yet. Please try again.
+          </p>
+          <button
+            type="button"
+            onClick={checkVerificationStatus}
+            className="bg-purple-600 hover:bg-purple-700 transition text-white font-semibold px-6 py-3 rounded-lg shadow-md"
+          >
+            Check Again
+          </button>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-[#EDE0FF] px-4">
       <div className="bg-white shadow-xl rounded-2xl p-8 md:p-12 max-w-xl w-full text-center">
@@ -38,10 +157,10 @@ export default function ThankYou() {
 
         {/* Button */}
         <Link
-          href="/"
+          href="/on-boarding"
           className="inline-block bg-purple-600 hover:bg-purple-700 transition duration-300 text-white font-semibold px-6 py-3 rounded-lg shadow-md"
         >
-          Go Back Home
+          Continue
         </Link>
       </div>
     </section>
