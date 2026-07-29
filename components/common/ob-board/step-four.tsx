@@ -64,6 +64,7 @@ export default function StepFour({ setStep, total = 4 }: Props) {
       }).unwrap();
 
       dispatch(authuser(signupRes?.user));
+      localStorage.setItem("token", signupRes?.user?.access_token);
       localStorage.setItem("user", JSON.stringify(signupRes?.user));
       await setFieldValue("user_id", signupRes?.user?.id);
       setStep((prev) => (prev + 1) % total);
