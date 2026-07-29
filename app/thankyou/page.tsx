@@ -19,6 +19,8 @@ export default function ThankYou() {
   const checkVerificationStatus = useCallback(async () => {
     let token = getToken();
 
+    console.log("token", token);
+
     if (!token) {
       const supabase = createClient();
       const {
