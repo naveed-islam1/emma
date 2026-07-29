@@ -1,6 +1,4 @@
 "use client";
-import Loading from "@/components/common/loading";
-import StepFive from "@/components/common/ob-board/step-five";
 import StepFour from "@/components/common/ob-board/step-four";
 import StepOne from "@/components/common/ob-board/step-one";
 import StepSix from "@/components/common/ob-board/step-six";
@@ -36,26 +34,15 @@ const validationSchema = Yup.object({
   country_code: Yup.string().required("Country is required"),
 
   specialty: Yup.string().required("specialty is required"),
-
-  cedula: Yup.string().required("Professional ID is required"),
 });
 
 export default function Onboarding() {
   const [step, setStep] = useState(0);
-  const [loading, setLoading] = useState(false);
   const user = useSelector((state: any) => state.auth.user);
   const [CreateProfile, { isLoading }] = useCreateProfileMutation();
   const router = useRouter();
 
-  const totalSteps = 6;
-
-  const handleNextFromStepFive = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setStep(5);
-    }, 2000);
-  };
+  const totalSteps = 5;
 
   const steps = [
     {
@@ -74,16 +61,7 @@ export default function Onboarding() {
       name: "Specialty",
       component: <StepFour setStep={setStep} total={totalSteps} />,
     },
-    {
-      name: "Professional ID",
-      component: (
-        <StepFive
-          setStep={setStep}
-          total={totalSteps}
-          handleNext={handleNextFromStepFive}
-        />
-      ),
-    },
+    // TEMP: Professional ID step is disabled. Restore StepFive when required.
     {
       name: "Verification",
       component: (
@@ -92,17 +70,9 @@ export default function Onboarding() {
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <Loading text="Verifying your Credentials" />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 grid lg:grid-cols-12">
-      {step === 5 ? (
+      {step === 4 ? (
         <div className="block col-span-3 bg-[#8A38F5] text-white p-10">
           <Image
             src="/assets/svg/Emma-logo-white.svg"
@@ -126,7 +96,7 @@ export default function Onboarding() {
           />
           <div className="lg:flex flex-col justify-center h-full mt-10 lg:mt-0">
             <ul className="space-y-4 lg:space-y-8 text-lg">
-              {steps.slice(0, 5).map((s, index) => (
+              {steps.slice(0, 4).map((s, index) => (
                 <li
                   key={index}
                   className={`transition-all duration-300 ${

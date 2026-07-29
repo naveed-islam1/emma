@@ -9,10 +9,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { authuser } from "@/features/authSlice";
+import { useSignupUserMutation } from "@/services/userApi";
+import { getFullName } from "@/utils/getFullName";
+import useScrapDoctorStore from "@/zustand/scrapDoctorText";
 import { ErrorMessage, useFormikContext } from "formik";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 type FormValues = {
+  user_id: string;
   specialty: string;
 };
 
@@ -26,6 +33,10 @@ const surgeries = ["Plastic Surgery", "Bariatric Surgery"];
 export default function StepFour({ setStep, total = 4 }: Props) {
   const { values, setFieldValue, validateForm, setTouched } =
     useFormikContext<FormValues>();
+  const { values: signUpValues } = useScrapDoctorStore();
+  const [SignupUser, { isLoading: signupLoading }] = useSignupUserMutation();
+  const user = useSelector((state: any) => state.auth.user);
+  const dispatch = useDispatch();
 
   const handleNext = async () => {
     const errors = await validateForm();
@@ -34,7 +45,31 @@ export default function StepFour({ setStep, total = 4 }: Props) {
 
     if (errors.specialty) return;
 
-    setStep((prev) => (prev + 1) % total);
+    if (user?.id) {
+      await setFieldValue("user_id", user.id);
+      setStep((prev) => (prev + 1) % total);
+      return;
+    }
+
+    try {
+      const signupRes = await SignupUser({
+        email: signUpValues.email,
+        password: signUpValues.password,
+        name: getFullName(signUpValues),
+        first_name: signUpValues.firstName,
+        middle_name: signUpValues.middle_name || null,
+        paternal_last_name: signUpValues.paternalLastName,
+        maternal_last_name: signUpValues.maternalLastName,
+        status: "inactive",
+      }).unwrap();
+
+      dispatch(authuser(signupRes?.user));
+      localStorage.setItem("user", JSON.stringify(signupRes?.user));
+      await setFieldValue("user_id", signupRes?.user?.id);
+      setStep((prev) => (prev + 1) % total);
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.message || "Something went wrong");
+    }
   };
 
   const handleBack = () => {
@@ -90,7 +125,7 @@ export default function StepFour({ setStep, total = 4 }: Props) {
         </Select>
 
         <ErrorMessage
-          name="city"
+          name="specialty"
           component="p"
           className="text-red-500 text-xs mt-1"
         />
@@ -113,9 +148,10 @@ export default function StepFour({ setStep, total = 4 }: Props) {
           variant={undefined}
           size={undefined}
           onClick={handleNext}
+          disabled={signupLoading}
           className="px-8 py-3 rounded-xl"
         >
-          Next
+          {signupLoading ? "Creating account..." : "Next"}
         </Button>
       </div>
     </div>
