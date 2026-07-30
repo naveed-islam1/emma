@@ -9,17 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { authuser } from "@/features/authSlice";
-import { useSignupUserMutation } from "@/services/userApi";
-import { getFullName } from "@/utils/getFullName";
-import useScrapDoctorStore from "@/zustand/scrapDoctorText";
 import { ErrorMessage, useFormikContext } from "formik";
 import React from "react";
-import { useDispatch } from "react-redux";
-import { toast } from "sonner";
 
 type FormValues = {
-  user_id: string;
   specialty: string;
 };
 
@@ -33,9 +26,6 @@ const surgeries = ["Plastic Surgery", "Bariatric Surgery"];
 export default function StepFour({ setStep, total = 4 }: Props) {
   const { values, setFieldValue, validateForm, setTouched } =
     useFormikContext<FormValues>();
-  const { values: signUpValues } = useScrapDoctorStore();
-  const [SignupUser, { isLoading: signupLoading }] = useSignupUserMutation();
-  const dispatch = useDispatch();
 
   const handleNext = async () => {
     const errors = await validateForm();
@@ -44,33 +34,7 @@ export default function StepFour({ setStep, total = 4 }: Props) {
 
     if (errors.specialty) return;
 
-    try {
-      const signupRes = await SignupUser({
-        email: signUpValues.email,
-        password: signUpValues.password,
-        name: getFullName(signUpValues),
-        first_name: signUpValues.firstName,
-        middle_name: signUpValues.middle_name || null,
-        paternal_last_name: signUpValues.paternalLastName,
-        maternal_last_name: signUpValues.maternalLastName,
-        status: "inactive",
-      }).unwrap();
-
-      dispatch(authuser(signupRes?.user));
-      if (signupRes?.access_token) {
-        localStorage.setItem("token", signupRes.access_token);
-      }
-      localStorage.setItem("user", JSON.stringify(signupRes?.user));
-      await setFieldValue("user_id", signupRes?.user?.id);
-      setStep((prev) => (prev + 1) % total);
-    } catch (err: any) {
-      toast.error(
-        err?.data?.message ||
-          err?.error ||
-          err?.message ||
-          "Account creation failed",
-      );
-    }
+    setStep((prev) => (prev + 1) % total);
   };
 
   const handleBack = () => {
@@ -126,7 +90,7 @@ export default function StepFour({ setStep, total = 4 }: Props) {
         </Select>
 
         <ErrorMessage
-          name="specialty"
+          name="city"
           component="p"
           className="text-red-500 text-xs mt-1"
         />
@@ -149,10 +113,9 @@ export default function StepFour({ setStep, total = 4 }: Props) {
           variant={undefined}
           size={undefined}
           onClick={handleNext}
-          disabled={signupLoading}
           className="px-8 py-3 rounded-xl"
         >
-          {signupLoading ? "Creating account..." : "Next"}
+          Next
         </Button>
       </div>
     </div>

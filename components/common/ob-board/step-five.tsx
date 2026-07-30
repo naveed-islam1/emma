@@ -65,6 +65,7 @@ export default function StepFive({ setStep, total = 5 }: Props) {
 
       dispatch(authuser(signupRes?.user));
       localStorage.setItem("user", JSON.stringify(signupRes?.user));
+      localStorage.setItem("token", signupRes?.access_token);
 
       setStep((prev) => (prev + 1) % total);
     } catch (err) {

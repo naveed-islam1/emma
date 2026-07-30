@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
+import Link from "next/link";
 
 export default function StepSix({ setStep, total = 6, isLoading }) {
   const handleBack = (e) => {
@@ -21,15 +22,17 @@ export default function StepSix({ setStep, total = 6, isLoading }) {
 
         {/* Navigation Buttons */}
         <div className="flex justify-between mt-25 absolute bottom-0 w-full">
-          <Button
-            variant="outline"
-            type="button"
-            onClick={handleBack}
-            className="px-8 py-3 rounded-xl"
-            size={undefined}
-          >
-            Back
-          </Button>
+          <Link href="/stepfive">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={handleBack}
+              className="px-8 py-3 rounded-xl"
+              size={undefined}
+            >
+              Back
+            </Button>
+          </Link>
           <Button
             type="submit"
             className="px-8 py-3 rounded-xl"
