@@ -184,13 +184,13 @@ export default function ThankYou() {
 
         {/* Message */}
         <p className="text-gray-600 mb-8 text-base md:text-lg">
-          Your submission has been received successfully. Please check your
-          email to confirm that your documents have been verified.
+          Your documents have been verified successfully. Please check your
+          email to confirm your account.
         </p>
 
         {/* Button */}
         <Link
-          href="/on-boarding"
+          href="/"
           className="inline-block bg-purple-600 hover:bg-purple-700 transition duration-300 text-white font-semibold px-6 py-3 rounded-lg shadow-md"
         >
           Continue

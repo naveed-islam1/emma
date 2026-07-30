@@ -48,6 +48,7 @@ export const userApi = createApi({
           return {
             data: {
               user: authData.user,
+              access_token: authData.session?.access_token,
               session: authData.session,
               success: true,
               message: authData.session

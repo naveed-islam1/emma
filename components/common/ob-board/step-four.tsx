@@ -57,8 +57,8 @@ export default function StepFour({ setStep, total = 4 }: Props) {
       }).unwrap();
 
       dispatch(authuser(signupRes?.user));
-      if (signupRes?.session?.access_token) {
-        localStorage.setItem("token", signupRes.session.access_token);
+      if (signupRes?.access_token) {
+        localStorage.setItem("token", signupRes.access_token);
       }
       localStorage.setItem("user", JSON.stringify(signupRes?.user));
       await setFieldValue("user_id", signupRes?.user?.id);
@@ -68,7 +68,7 @@ export default function StepFour({ setStep, total = 4 }: Props) {
         err?.data?.message ||
           err?.error ||
           err?.message ||
-          "Account creation failed"
+          "Account creation failed",
       );
     }
   };
