@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import FeatureCards from "@/components/blog/feature-cards";
 import Footer from "@/components/common/footer";
 import Navbar from "@/components/common/navbar";
 import Image from "next/image";
 import React from "react";
 
+
+export const metadata: Metadata = {
+  title: "Blog — Medical Tourism Guides & Insights",
+  description:
+    "Guides and insights on medical tourism: surgery in Mexico, procedures, pricing, safety, and recovery.",
+  alternates: { canonical: "/blog" },
+};
 
 export default function Blog() {
   return (

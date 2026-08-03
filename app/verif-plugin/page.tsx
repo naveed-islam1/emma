@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVeriffVerifyMutation } from "@/services/profileApi";
 import { useSelector } from "react-redux";
@@ -12,7 +12,7 @@ import { Loader } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function Verifplugin() {
+function Verifplugin() {
   const [step, setStep] = useState(1);
   const [veriffVerify, { isLoading }] = useVeriffVerifyMutation();
   const user = useSelector((state: any) => state.auth.user as User);
@@ -123,5 +123,14 @@ export default function Verifplugin() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+// useSearchParams() requires a Suspense boundary during prerendering
+export default function VerifpluginPage() {
+  return (
+    <Suspense fallback={null}>
+      <Verifplugin />
+    </Suspense>
   );
 }

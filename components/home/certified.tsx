@@ -67,10 +67,7 @@ export default function Certified() {
           <p className="text-xl md:text-2xl xl:text-[30px] font-normal text-white text-center lg:text-start">
             Get matched with the right certified surgeon in minutes
           </p>
-          <Link
-            href="https://chatbase.co/CxhlAExpUPBoBhFZgoC-H/help"
-            target="_blank"
-          >
+          <Link href="/chat">
             <Button
               variant="default"
               className={"mx-auto lg:mx-0 block mt-5 lg:mt-0"}

@@ -2,6 +2,7 @@
 
 const projectId = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID;
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const emmaApiUrl = process.env.NEXT_PUBLIC_EMMA_API_URL;
 
 const nextConfig = {
   reactStrictMode: true,
@@ -30,6 +31,7 @@ const nextConfig = {
               
               connect-src 'self'
                 ${backendUrl}
+                ${emmaApiUrl || ""}
                 https://${projectId}.supabase.co
                 https://api.stripe.com
                 https://*.stripe.com

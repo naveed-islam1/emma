@@ -34,9 +34,9 @@ export default function Discover() {
   return (
     <>
       <div className="max-w-7xl mx-5 lg:mx-8 xl:mx-auto py-10 lg:py-12  flex flex-col justify-center items-center">
-        <h1 className="arial font-normal text-[30px] md:text-[45px] xl:text-[60px] mb-6 leading-tight text-center">
+        <h2 className="arial font-normal text-[30px] md:text-[45px] xl:text-[60px] mb-6 leading-tight text-center">
           Discover what sets Emma apart
-        </h1>
+        </h2>
         <p className="text-[#4E4E4E] max-w-xl text-lg md:text-xl text-center font-normal leading-relaxed">
           Patients trust Emma for one reason: we put their goals first with
           expert guidance, verified surgeons, and a complete experience abroad.
@@ -78,10 +78,7 @@ export default function Discover() {
           <p className="text-xl md:text-2xl xl:text-[30px] font-normal text-white text-center lg:text-start">
             Your Journey. Your Surgeon. Your Results.
           </p>
-          <Link
-            href={"https://www.chatbase.co/CxhlAExpUPBoBhFZgoC-H/help"}
-            target="_blank"
-          >
+          <Link href="/chat">
             <Button
               variant="default"
               className="mx-auto lg:mx-0  block w-fit py-3 px-8"

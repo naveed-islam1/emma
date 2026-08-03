@@ -33,9 +33,9 @@ export default function Steps() {
         <ul className="text-xl text-[#131313] font-normal list-disc pl-5">
           <li>Steps</li>
         </ul>
-        <h1 className="font-normal  text-[40px] md:text-[45px] xl:text-[50px] mb-10 leading-tight text-center">
+        <h2 className="font-normal  text-[40px] md:text-[45px] xl:text-[50px] mb-10 leading-tight text-center">
           This is how Emma works
-        </h1>
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {steps.map((step, index) => (
@@ -43,12 +43,12 @@ export default function Steps() {
               key={index}
               className="relative pt-16 md:pt-40 pb-16 text-center bg-[#F1F4F9] px-5 lg:px-13 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <h2
+              <h3
                 style={{ textShadow: "2px 4px 6px rgba(0, 0, 0, 0.1)" }}
                 className=" text-7xl md:text-8xl font-normal text-white select-none"
               >
                 {step.number}
-              </h2>
+              </h3>
               <div className="relative">
                 <h3 className="mb-17 text-xl lg:text-2xl font-medium text-[#131313]">
                   {step.title}

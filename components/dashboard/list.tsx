@@ -1,13 +1,23 @@
 "use client";
 import {
+  dashboardApi,
   useGetLeadsQuery,
   useUnlockLeadMutation,
 } from "@/services/dashboardApis";
+import { useRecordOutcomeMutation } from "@/services/emmaApi";
 import { Button } from "../ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { FaLock, FaUnlock } from "react-icons/fa";
 import { LeadsSkeleton } from "../skeletons/LeadsSkeleton";
 import Pagination from "../Pagination";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { UnlockLeadModal } from "./unlock-leadmodal";
 import toast from "react-hot-toast";
 import { useSupabaseUser } from "@/hooks/useUser";
@@ -20,6 +30,15 @@ const statusButtonColorMap = {
   Completed: "#00B69B",
   Closed: "#EF3826",
 };
+
+// Display label ↔ backend progress_status value (order = funnel order)
+const STATUS_OPTIONS = [
+  { label: "New", value: "new" },
+  { label: "Contacted", value: "contacted" },
+  { label: "Scheduled", value: "scheduled" },
+  { label: "Completed", value: "completed" },
+  { label: "Closed", value: "closed" },
+];
 
 export default function List({ data }) {
   const { data: user } = useGetProfileQuery({});
@@ -48,6 +67,22 @@ export default function List({ data }) {
       })
       .catch((error) => {
         toast.error(error.data?.message);
+      });
+  };
+
+  const dispatch = useDispatch();
+  const [recordOutcome] = useRecordOutcomeMutation();
+
+  const handleStatusChange = async (item, newStatus) => {
+    await recordOutcome({ lead_id: item.lead_id ?? item.id, new_status: newStatus })
+      .unwrap()
+      .then(() => {
+        toast.success("¡Gracias! Emma aprende de cada actualización. 💜");
+        // Dashboard data lives in the other API client — refetch its lists
+        dispatch(dashboardApi.util.invalidateTags(["Dashboard"]));
+      })
+      .catch((error) => {
+        toast.error(error?.data?.error || "No se pudo actualizar el estado");
       });
   };
 
@@ -101,17 +136,36 @@ export default function List({ data }) {
                       </div>
                     </div>
                     <div className="w-[127px]">
-                      <Button
-                        className="font-semibold text-sm py-1 px-7 w-full rounded-[5px]"
-                        style={{
-                          backgroundColor: statusButtonColorMap[item?.status],
-                          color: item.buttonColor,
-                        }}
-                        variant={undefined}
-                        size={undefined}
+                      <Select
+                        value={
+                          STATUS_OPTIONS.find((o) => o.label === item?.status)
+                            ?.value
+                        }
+                        onValueChange={(v) => handleStatusChange(item, v)}
+                        disabled={!(item.unlock_status ?? item.is_unlocked)}
                       >
-                        {item?.status}
-                      </Button>
+                        <SelectTrigger
+                          className="font-semibold text-sm w-full rounded-[5px] border-0 text-white justify-center"
+                          style={{
+                            backgroundColor:
+                              statusButtonColorMap[item?.status] ?? "#FFA756",
+                            color: item.buttonColor,
+                          }}
+                        >
+                          <SelectValue placeholder={item?.status ?? "New"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {STATUS_OPTIONS.map((o) => (
+                            <SelectItem key={o.value} value={o.value}>
+                              {o.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-[10px] text-[#4E4E4E] mt-1 leading-tight">
+                        Actualizar el estado entrena a Emma para encontrarte
+                        mejores pacientes
+                      </p>
                     </div>
                   </div>
                 );

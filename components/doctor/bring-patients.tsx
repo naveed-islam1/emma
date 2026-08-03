@@ -18,9 +18,9 @@ export default function BringPatients() {
             />
           </div>
           <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
-            <h1 className="font-normal text-[30px] sm:text-[40px] md:text-[30px] lg:text-[50px] text-white mb-6 leading-tight">
+            <h2 className="font-normal text-[30px] sm:text-[40px] md:text-[30px] lg:text-[50px] text-white mb-6 leading-tight">
               Let Emma bring the right patients to you
-            </h1>
+            </h2>
             <Link href="/steps">
               <Button variant="default" className={undefined} size={undefined}>
                 Join Emma

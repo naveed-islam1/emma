@@ -17,9 +17,9 @@ export default function Travel() {
           <ul className="text-xl text-[#131313] font-normal list-disc pl-5">
             <li>Travel</li>
           </ul>
-          <h1 className="arial font-normal text-[40px] md:text-[45px] xl:text-[50px] mb-10">
+          <h2 className="arial font-normal text-[40px] md:text-[45px] xl:text-[50px] mb-10">
             Why get surgery abroad?
-          </h1>
+          </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
             <div className="space-y-6">
               {benefits.map((text, index) => (

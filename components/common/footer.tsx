@@ -50,7 +50,7 @@ export default function Footer() {
             </h1> */}
             <Image
               src={"/assets/svg/logo.svg"}
-              alt=""
+              alt="Emma logo"
               width={600}
               height={200}
               className="w-[300px] md:w-[600px]"

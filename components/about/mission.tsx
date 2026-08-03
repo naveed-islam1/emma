@@ -10,9 +10,9 @@ export default function Mission() {
         <ul className="text-lg md:text-xl text-[#131313] font-normal list-disc pl-5 mb-2">
           <li>Mission</li>
         </ul>
-        <h1 className="arial max-w-4xl font-normal text-[30px] md:text-[45px] xl:text-[60px] mb-5 md:mb-10 leading-tight">
+        <h2 className="arial max-w-4xl font-normal text-[30px] md:text-[45px] xl:text-[60px] mb-5 md:mb-10 leading-tight">
           Making surgery abroad safer, smarter, and more complete
-        </h1>
+        </h2>
 
         {/* grid */}
 
@@ -40,10 +40,7 @@ export default function Mission() {
               {`Emma isn’t just about saving money, it’s about getting the
               complete experience you deserve.`}
             </p>
-            <Link
-              href={"https://www.chatbase.co/CxhlAExpUPBoBhFZgoC-H/help"}
-              target="_blank"
-            >
+            <Link href="/chat">
               <Button
                 variant="default"
                 className="mx-auto lg:mx-0  block w-fit py-3 px-8"

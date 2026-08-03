@@ -7,9 +7,9 @@ export default function AboutHero() {
       <div className="py-16 max-w-7xl mx-5 lg:mx-8 xl:mx-auto">
         <div className="mb-12 grid lg:grid-cols-2 items-end gap-6 lg:mt-0">
           <div>
-            <h2 className=" arial text-[40px] xl:text-[50px] font-normal text-[#131313] leading-tight">
+            <h1 className=" arial text-[40px] xl:text-[50px] font-normal text-[#131313] leading-tight">
               Affordable, personalized surgery abroad
-            </h2>
+            </h1>
           </div>
           <p className="text-[#4E4E4E] text-lg md:text-xl font-normal leading-relaxed">
             We guide you to the surgeon who matches your needs, with safer,

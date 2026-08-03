@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/common/navbar";
 import Image from "next/image";
 import React from "react";
@@ -41,6 +42,13 @@ const sections = [
     ],
   },
 ];
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "How Emma collects, uses, and protects your personal information.",
+  alternates: { canonical: "/privacy" },
+};
 
 export default function Privacy() {
   return (

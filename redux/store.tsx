@@ -16,9 +16,9 @@ import {
 import storage from "redux-persist/lib/storage";
 import { userApi } from "../services/userApi";
 import { profileApi } from "../services/profileApi";
-import { blogApi } from "@/services/blogApi";
 import { paymentApi } from "@/services/payment";
 import { dashboardApi } from "@/services/dashboardApis";
+import { emmaApi } from "@/services/emmaApi";
 
 const persistConfig = {
   key: "root",
@@ -39,9 +39,9 @@ const makeStore = () =>
       })
         .concat(userApi.middleware)
         .concat(profileApi.middleware)
-        .concat(blogApi.middleware)
         .concat(paymentApi.middleware)
-        .concat(dashboardApi.middleware),
+        .concat(dashboardApi.middleware)
+        .concat(emmaApi.middleware),
   });
 
 const store = makeStore();

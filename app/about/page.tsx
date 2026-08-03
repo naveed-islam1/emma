@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import AboutEmma from "@/components/about/about-rmma";
 import Discover from "@/components/about/discover";
 import AboutHero from "@/components/about/hero";
@@ -5,6 +6,13 @@ import Mission from "@/components/about/mission";
 import Footer from "@/components/common/footer";
 import Navbar from "@/components/common/navbar";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "About Emma — Making Surgery Abroad Safer",
+  description:
+    "Learn how Emma verifies surgeon credentials and guides patients through safe, affordable, personalized surgery in Mexico.",
+  alternates: { canonical: "/about" },
+};
 
 export default function AboutPage() {
   return (

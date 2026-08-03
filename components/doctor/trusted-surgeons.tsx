@@ -7,9 +7,9 @@ export default function TrustedSurgeons() {
   return (
     <>
       <div className="text-center bg-[#F1F4F9] py-10 md:py-20 px-5 md:px-8 lg:px-0 mt-16 md:mt-0">
-        <h1 className="font-normal text-[30px] md:text-[50px] text-[#131313] leading-tight">
+        <h2 className="font-normal text-[30px] md:text-[50px] text-[#131313] leading-tight">
           Become part of a trusted <br /> community of surgeons
-        </h1>
+        </h2>
         <Image
           src={"/assets/jpg/smile-female-physician.jpg"}
           alt="image"

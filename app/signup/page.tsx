@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSignupUserMutation } from "@/services/userApi";
 import { getFullName } from "@/utils/getFullName";
 import useScrapDoctorStore from "@/zustand/scrapDoctorText";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -16,6 +17,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(true);
   const router = useRouter();
   const { addSearchText, addValues } = useScrapDoctorStore();
+  const [SignupUser, { isLoading }] = useSignupUserMutation();
 
   const SignupSchema = Yup.object({
     firstName: Yup.string().required("First name is required"),
@@ -34,24 +36,27 @@ export default function Signup() {
       addSearchText(fullName);
       addValues(values);
 
-      // const result = await SignupUser({
-      //   email: values.email,
-      //   password: values.password,
-      //   name: fullName,
-      //   first_name: values.firstName,
-      //   middle_name: values.middleName || null,
-      //   paternal_last_name: values.paternalLastName,
-      //   maternal_last_name: values.maternalLastName,
-      //   status: "inactive",
-      // }).unwrap();
+      await SignupUser({
+        email: values.email,
+        password: values.password,
+        name: fullName,
+        first_name: values.firstName,
+        middle_name: values.middleName || null,
+        paternal_last_name: values.paternalLastName,
+        maternal_last_name: values.maternalLastName,
+        status: "inactive",
+      }).unwrap();
 
-      // dispatch(authuser(result?.user));
-      // localStorage.setItem("user", JSON.stringify(result?.user));
-
-      router.push("/on-boarding");
-    } catch (error) {
+      // Do not log in here — wait for email confirmation
+      router.push(`/confirm-email?email=${encodeURIComponent(values.email)}`);
+    } catch (error: any) {
       console.error("Signup error:", error);
-      toast.error("Signup failed. Please try again.");
+      toast.error(
+        error?.data?.error ||
+          error?.error ||
+          error?.message ||
+          "Signup failed. Please try again.",
+      );
     }
   };
 
@@ -235,8 +240,9 @@ export default function Signup() {
                   variant={""}
                   type="submit"
                   className="py-2! px-8!"
+                  disabled={isLoading}
                 >
-                  {"Start"}
+                  {isLoading ? "Creating..." : "Start"}
                 </Button>
               </Form>
             )}

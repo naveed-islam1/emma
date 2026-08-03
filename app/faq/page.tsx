@@ -4,56 +4,7 @@ import Navbar from "@/components/common/navbar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React, { useState } from "react";
-
-const faqs = [
-  {
-    id: 1,
-    question: "Is surgery abroad really safe?",
-    answer:
-      "Yes. At Emma, we only work with certified and verified surgeons who meet strict standards. Every doctor in our network is highly trained and experienced, ensuring your procedure is safe and professional.",
-  },
-  {
-    id: 2,
-    question: "How much can I save by getting surgery abroad?",
-    answer:
-      "On average, patients save up to 70% compared to U.S. prices. And unlike in the U.S., many packages abroad include recovery houses, meals, and support services, making it a more complete experience.",
-  },
-  {
-    id: 3,
-    question: "How does Emma help me choose the right surgeon?",
-    answer:
-      "We guide you step by step. Based on your medical profile and the results you want, Emma matches you with surgeons who specialize in your specific needs. You'll be able to review their profiles before making your decision.",
-  },
-  {
-    id: 4,
-    question: "What does ‘all-inclusive experience’ mean?",
-    answer:
-      "Most of our partner surgeons offer packages that include not only the procedure, but also recovery houses, nursing care, transportation, and follow-up, things that usually cost extra in the U.S.",
-  },
-  {
-    id: 5,
-    question: "Will I still have direct contact with my surgeon?",
-    answer:
-      "Absolutely. Once connected, you'll be in direct communication with your surgeon and their team. Emma simply helps you find the right fit; your medical relationship is always between you and your doctor.",
-  },
-  {
-    id: 6,
-    question: "What happens if I have complications after surgery?",
-    answer:
-      "Your surgeon will provide clear instructions and follow-up care. Many packages include extended recovery support. We also guide you on what’s covered so you feel supported every step of the way.",
-  },
-  {
-    id: 7,
-    question: "Do I need to speak Spanish?",
-    answer: "Not at all. Most of our surgeons and their staff speak English.",
-  },
-  {
-    id: 8,
-    question: "How do I get started?",
-    answer:
-      "It’s simple: complete a short intake with Emma, review your matched surgeons, and choose the one that best fits your needs. From there, your journey is personalized, safe, and stress-free.",
-  },
-];
+import { faqs } from "./faqs";
 
 export default function Faq() {
   const [openId, setOpenId] = useState(null);
@@ -68,9 +19,9 @@ export default function Faq() {
       <div className="py-16 md:py-16 max-w-7xl mx-5 lg:mx-8 xl:mx-auto">
         <div className="mb-12 grid lg:grid-cols-2 items-end gap-5 lg:gap-8 lg:mt-0">
           <div>
-            <h2 className="arial text-[40px] xl:text-[50px] font-normal text-[#131313] leading-tight">
+            <h1 className="arial text-[40px] xl:text-[50px] font-normal text-[#131313] leading-tight">
               Frequently Asked Questions
-            </h2>
+            </h1>
           </div>
           <p className="text-[#4E4E4E] text-lg md:text-xl font-normal leading-relaxed">
             {`We know choosing surgery abroad is a big step. That’s why we’ve
@@ -92,11 +43,14 @@ export default function Faq() {
                   {faq.id}. {faq.question}
                 </h3>
 
-                {openId === faq.id && (
-                  <p className="text-[#4E4E4E] font-normal leading-relaxed">
-                    {faq.answer}
-                  </p>
-                )}
+                {/* Always in the DOM so crawlers see the answers; CSS toggles visibility */}
+                <p
+                  className={`text-[#4E4E4E] font-normal leading-relaxed ${
+                    openId === faq.id ? "" : "hidden"
+                  }`}
+                >
+                  {faq.answer}
+                </p>
               </div>
             ))}
           </div>
@@ -108,10 +62,7 @@ export default function Faq() {
           <p className="text-xl md:text-2xl xl:text-[30px] font-normal text-white text-center lg:text-start">
             {`You’ve got the answers, now let’s begin your transformation.`}
           </p>
-          <Link
-            href={"https://www.chatbase.co/CxhlAExpUPBoBhFZgoC-H/help"}
-            target="_blank"
-          >
+          <Link href="/chat">
             <Button
               variant="default"
               className="mx-auto lg:mx-0  block w-fit py-3 px-8"

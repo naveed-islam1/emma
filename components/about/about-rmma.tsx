@@ -27,10 +27,10 @@ export default function AboutEmma() {
             <li>About Emma</li>
           </ul>
 
-          <h1 className="arial font-normal  text-[30px] md:text-[45px] xl:text-[60px] mb-10 leading-tight text-center">
+          <h2 className="arial font-normal  text-[30px] md:text-[45px] xl:text-[60px] mb-10 leading-tight text-center">
             Emma uses our expertise in medical tourism and surgery to make your
             journey safe, simple, and personalized.
-          </h1>
+          </h2>
 
           {/* grid */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 text-center w-full">

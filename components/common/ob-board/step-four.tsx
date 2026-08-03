@@ -51,24 +51,6 @@ export default function StepFour({ setStep, total = 4 }: Props) {
         Surgery).
       </p>
 
-      {/* Specialty Select */}
-      {/* <div className="max-w-md">
-        <Input
-          type="text"
-          name="specialty"
-          placeholder="Specialty"
-          value={values.specialty}
-          onChange={(e) => setFieldValue("specialty", e.target.value)}
-          className="py-2!"
-        />
-
-        <ErrorMessage
-          name="specialty"
-          component="p"
-          className="text-red-500 text-xs mt-1"
-        />
-      </div> */}
-
       <div className="max-w-md">
         <Select
           value={values.specialty}
@@ -90,7 +72,7 @@ export default function StepFour({ setStep, total = 4 }: Props) {
         </Select>
 
         <ErrorMessage
-          name="city"
+          name="specialty"
           component="p"
           className="text-red-500 text-xs mt-1"
         />

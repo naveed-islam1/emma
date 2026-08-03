@@ -44,14 +44,11 @@ export default function MedicalTourismJourney() {
 
         {/* Center Content */}
         <div className="relative z-10">
-          <h1 className="font-normal text-[30px] sm:text-[40px] md:text-[30px] lg:text-[50px] text-white mb-6 leading-tight">
+          <h2 className="font-normal text-[30px] sm:text-[40px] md:text-[30px] lg:text-[50px] text-white mb-6 leading-tight">
             Your medical tourism <br />
             journey starts here
-          </h1>
-          <Link
-            href="https://chatbase.co/CxhlAExpUPBoBhFZgoC-H/help"
-            target="_blank"
-          >
+          </h2>
+          <Link href="/chat">
             <Button variant="default" className={undefined} size={undefined}>
               Chat with Emma
             </Button>

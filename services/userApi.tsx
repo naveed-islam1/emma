@@ -1,5 +1,4 @@
 "use client";
-import Signup from "@/app/signup/page";
 import { getToken } from "@/utils/helper";
 import { createClient } from "@/utils/supabaseClient";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -25,17 +24,24 @@ export const userApi = createApi({
       queryFn: async (credentials) => {
         try {
           const supabase = createClient();
+          const emailRedirectTo =
+            typeof window !== "undefined"
+              ? `${window.location.origin}/auth/callback`
+              : undefined;
+
           const { data: authData, error: authError } =
             await supabase.auth.signUp({
               email: credentials.email,
               password: credentials.password,
               options: {
+                emailRedirectTo,
                 data: {
                   first_name: credentials.first_name,
                   middle_name: credentials.middle_name,
                   paternal_last_name: credentials.paternal_last_name,
                   maternal_last_name: credentials.maternal_last_name,
                   status: credentials.status,
+                  name: credentials.name,
                 },
               },
             });
@@ -44,6 +50,9 @@ export const userApi = createApi({
               error: { status: "FETCH_ERROR", error: authError.message },
             };
           }
+
+          console.log("authData", authData);
+          console.log("authData.session", authData.session);
 
           return {
             data: {
