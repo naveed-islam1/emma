@@ -1,6 +1,6 @@
 "use client";
-// TEMP: StepFive (Professional ID) skipped — revert later
-// import StepFive from "@/components/common/ob-board/step-five";
+import Loading from "@/components/common/loading";
+import StepFive from "@/components/common/ob-board/step-five";
 import StepFour from "@/components/common/ob-board/step-four";
 import StepOne from "@/components/common/ob-board/step-one";
 import StepSix from "@/components/common/ob-board/step-six";
@@ -37,27 +37,25 @@ const validationSchema = Yup.object({
 
   specialty: Yup.string().required("specialty is required"),
 
-  // TEMP: cedula optional while StepFive is skipped — revert later
-  cedula: Yup.string(),
+  cedula: Yup.string().required("Professional ID is required"),
 });
 
 export default function Onboarding() {
   const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
   const user = useSelector((state: any) => state.auth.user);
   const [CreateProfile, { isLoading }] = useCreateProfileMutation();
   const router = useRouter();
 
-  // TEMP: was 6 with Professional ID — revert later
-  const totalSteps = 5;
+  const totalSteps = 6;
 
-  // TEMP: StepFive loading handoff — revert later
-  // const handleNextFromStepFive = () => {
-  //   setLoading(true);
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //     setStep(5);
-  //   }, 2000);
-  // };
+  const handleNextFromStepFive = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setStep(5);
+    }, 2000);
+  };
 
   const steps = [
     {
@@ -76,17 +74,16 @@ export default function Onboarding() {
       name: "Specialty",
       component: <StepFour setStep={setStep} total={totalSteps} />,
     },
-    // TEMP: Professional ID skipped — Specialty → Verification — revert later
-    // {
-    //   name: "Professional ID",
-    //   component: (
-    //     <StepFive
-    //       setStep={setStep}
-    //       total={totalSteps}
-    //       handleNext={handleNextFromStepFive}
-    //     />
-    //   ),
-    // },
+    {
+      name: "Professional ID",
+      component: (
+        <StepFive
+          setStep={setStep}
+          total={totalSteps}
+          handleNext={handleNextFromStepFive}
+        />
+      ),
+    },
     {
       name: "Verification",
       component: (
@@ -95,11 +92,15 @@ export default function Onboarding() {
     },
   ];
 
-  // TEMP: Verification is now last index (4), was 5 — revert later
   const isVerificationStep = step === totalSteps - 1;
 
   return (
-    <div className="min-h-screen bg-gray-50 grid lg:grid-cols-12">
+    <div className="min-h-screen bg-gray-50 grid lg:grid-cols-12 relative">
+      {loading && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-white">
+          <Loading text="Verifying your Credentials" />
+        </div>
+      )}
       {isVerificationStep ? (
         <div className="block col-span-3 bg-[#8A38F5] text-white p-10">
           <Image

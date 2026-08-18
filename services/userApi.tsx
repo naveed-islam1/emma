@@ -126,9 +126,8 @@ export const userApi = createApi({
         paterno: string;
         materno: string;
       }) => {
-        console.log("nombre,paterno,materno,", nombre, paterno, materno);
         return {
-          url: `/cedula/verify`,
+          url: "https://backend.emmamatch.com/cedula/verify",
           method: "POST",
           body: {
             cedula,

@@ -36,6 +36,7 @@ const nextConfig = {
                 https://api.stripe.com
                 https://*.stripe.com
                 http://localhost:4000
+                https://backend.emmamatch.com
                 https://cecille-pendente-alondra.ngrok-free.dev
                 https://cdn.jsdelivr.net;
               
