@@ -47,7 +47,6 @@ export default function Signup() {
         status: "inactive",
       }).unwrap();
 
-      // Do not log in here — wait for email confirmation
       router.push(`/confirm-email?email=${encodeURIComponent(values.email)}`);
     } catch (error: any) {
       console.error("Signup error:", error);

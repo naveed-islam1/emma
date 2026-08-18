@@ -2,16 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { authuser } from "@/features/authSlice";
-import {
-  useSignupUserMutation,
-  useVerifycedulaMutation,
-} from "@/services/userApi";
+import { useVerifycedulaMutation } from "@/services/userApi";
 import { getFullName } from "@/utils/getFullName";
 import useScrapDoctorStore from "@/zustand/scrapDoctorText";
 import { ErrorMessage, useFormikContext } from "formik";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 type FormValues = {
@@ -25,11 +21,14 @@ type Props = {
   handleNext: () => void;
 };
 
-export default function StepFive({ setStep, total = 5 }: Props) {
+export default function StepFive({
+  setStep,
+  total = 5,
+  handleNext: goToVerification,
+}: Props) {
   const [verifyCedula, { isLoading }] = useVerifycedulaMutation();
   const { searchText, values: signUpValues } = useScrapDoctorStore();
-  const dispatch = useDispatch();
-  const [SignupUser, { isLoading: signupLoading }] = useSignupUserMutation();
+  const user = useSelector((state: any) => state.auth.user);
 
   const { values, setFieldValue, validateForm } =
     useFormikContext<FormValues>();
@@ -39,36 +38,40 @@ export default function StepFive({ setStep, total = 5 }: Props) {
     if (errors.cedula) return;
 
     try {
+      const nombre =
+        signUpValues?.firstName ||
+        user?.first_name ||
+        user?.user_metadata?.first_name ||
+        "";
+      const paterno =
+        signUpValues?.paternalLastName ||
+        user?.paternal_last_name ||
+        user?.user_metadata?.paternal_last_name ||
+        "";
+      const materno =
+        signUpValues?.maternalLastName ||
+        user?.maternal_last_name ||
+        user?.user_metadata?.maternal_last_name ||
+        "";
+
       const verifyRes = await verifyCedula({
         cedula: values.cedula,
         speciality: values.specialty,
-        searchText: searchText,
-        nombre: signUpValues.firstName,
-        paterno: signUpValues.paternalLastName,
-        materno: signUpValues.maternalLastName,
+        searchText:
+          searchText ||
+          getFullName({
+            firstName: nombre,
+            paternalLastName: paterno,
+            maternalLastName: materno,
+          }),
+        nombre,
+        paterno,
+        materno,
       }).unwrap();
 
       toast.success(verifyRes.message);
-
-      const fullName = getFullName(signUpValues);
-
-      const signupRes = await SignupUser({
-        email: signUpValues.email,
-        password: signUpValues.password,
-        name: fullName,
-        first_name: signUpValues.firstName,
-        middle_name: signUpValues.middle_name || null,
-        paternal_last_name: signUpValues.paternalLastName,
-        maternal_last_name: signUpValues.maternalLastName,
-        status: "inactive",
-      }).unwrap();
-
-      dispatch(authuser(signupRes?.user));
-      localStorage.setItem("user", JSON.stringify(signupRes?.user));
-      localStorage.setItem("token", signupRes?.access_token);
-
-      setStep((prev) => (prev + 1) % total);
-    } catch (err) {
+      goToVerification();
+    } catch (err: any) {
       console.log("ERROR:", err);
 
       toast.error(err?.data?.message || err?.message || "Something went wrong");
@@ -123,7 +126,7 @@ export default function StepFive({ setStep, total = 5 }: Props) {
           onClick={handleNext}
           className="px-8 py-3 rounded-xl"
         >
-          {isLoading || signupLoading ? "Verifying..." : "Next"}
+          {isLoading ? "Verifying..." : "Next"}
         </Button>
       </div>
     </div>

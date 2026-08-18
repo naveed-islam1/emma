@@ -29,8 +29,19 @@ function Verifplugin() {
   }, [step2]);
 
   const handleNext = () => {
+    const storedUser =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("user") || "null")
+        : null;
+    const userId = user?.id || storedUser?.id;
+
+    if (!userId) {
+      toast.error("User session not found. Please sign in again.");
+      return;
+    }
+
     veriffVerify({
-      userId: user?.id,
+      userId,
     })
       .unwrap()
       .then((res) => {
@@ -41,7 +52,12 @@ function Verifplugin() {
         window.location.href = verificationUrl;
       })
       .catch((error) => {
-        toast.error("Error verifying user: " + error.message);
+        toast.error(
+          error?.data?.error ||
+            error?.data?.message ||
+            error?.message ||
+            "Error verifying user",
+        );
       });
   };
 

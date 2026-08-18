@@ -25,7 +25,6 @@ export default function SignupForm() {
       });
       if (error) throw error;
 
-      // ensure session exists
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -39,8 +38,6 @@ export default function SignupForm() {
       if (!r.ok) throw new Error(j?.error || "Failed to init doctor");
 
       setMsg("Account created — proceed to identity verification.");
-      // navigate to your verify page if you have routing:
-      // router.push("/verify");
     } catch (err: any) {
       setMsg(err.message || "Something went wrong");
     } finally {
