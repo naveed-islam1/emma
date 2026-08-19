@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useVerifycedulaMutation } from "@/services/userApi";
-import { getFullName } from "@/utils/getFullName";
-import useScrapDoctorStore from "@/zustand/scrapDoctorText";
+import { getFullName, getNamePartsFromUser } from "@/utils/getFullName";
+import { createClient } from "@/utils/supabaseClient";
 import { ErrorMessage, useFormikContext } from "formik";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -27,7 +27,6 @@ export default function StepFive({
   handleNext: goToVerification,
 }: Props) {
   const [verifyCedula, { isLoading }] = useVerifycedulaMutation();
-  const { searchText, values: signUpValues } = useScrapDoctorStore();
   const user = useSelector((state: any) => state.auth.user);
 
   const { values, setFieldValue, validateForm } =
@@ -38,32 +37,27 @@ export default function StepFive({
     if (errors.cedula) return;
 
     try {
-      const nombre =
-        signUpValues?.firstName ||
-        user?.first_name ||
-        user?.user_metadata?.first_name ||
-        "";
-      const paterno =
-        signUpValues?.paternalLastName ||
-        user?.paternal_last_name ||
-        user?.user_metadata?.paternal_last_name ||
-        "";
-      const materno =
-        signUpValues?.maternalLastName ||
-        user?.maternal_last_name ||
-        user?.user_metadata?.maternal_last_name ||
-        "";
+      const supabase = createClient();
+      const { data } = await supabase.auth.getUser();
+      const sessionUser = data?.user;
+
+      const { nombre, paterno, materno } = getNamePartsFromUser(
+        sessionUser || user,
+      );
+
+      if (!nombre || !paterno || !materno) {
+        toast.error("Name details not found on this account. Please sign in again.");
+        return;
+      }
 
       const verifyRes = await verifyCedula({
         cedula: values.cedula,
         speciality: values.specialty,
-        searchText:
-          searchText ||
-          getFullName({
-            firstName: nombre,
-            paternalLastName: paterno,
-            maternalLastName: materno,
-          }),
+        searchText: getFullName({
+          firstName: nombre,
+          paternalLastName: paterno,
+          maternalLastName: materno,
+        }),
         nombre,
         paterno,
         materno,

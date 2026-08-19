@@ -6,6 +6,10 @@ export interface User {
   created_at?: string;
   updated_at?: string;
   name?: string;
+  first_name?: string;
+  middle_name?: string | null;
+  paternal_last_name?: string;
+  maternal_last_name?: string;
 }
 export interface SignInCredentials {
   email: string;

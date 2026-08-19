@@ -90,15 +90,20 @@ export const userApi = createApi({
           }
 
           // Map Supabase session to our Session type
+          const meta = data.session.user.user_metadata || {};
           const mappedSession: Session = {
             access_token: data.session.access_token,
             refresh_token: data.session.refresh_token,
             user: {
               id: data.session.user.id,
               email: data.session.user.email,
-              name: data.session.user.user_metadata?.name,
-              role: data.session.user.user_metadata?.role,
+              name: meta.name,
+              role: meta.role,
               phone: data.session.user.phone,
+              first_name: meta.first_name,
+              middle_name: meta.middle_name,
+              paternal_last_name: meta.paternal_last_name,
+              maternal_last_name: meta.maternal_last_name,
               created_at: data.session.user.created_at,
               updated_at: data.session.user.updated_at,
             },

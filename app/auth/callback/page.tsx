@@ -45,12 +45,17 @@ export default function AuthCallbackPage() {
           throw new Error("No session returned after email confirmation");
         }
 
+        const meta = session.user.user_metadata || {};
         const user = {
           id: session.user.id,
           email: session.user.email,
-          name: session.user.user_metadata?.name,
-          role: session.user.user_metadata?.role,
+          name: meta.name,
+          role: meta.role,
           phone: session.user.phone,
+          first_name: meta.first_name,
+          middle_name: meta.middle_name,
+          paternal_last_name: meta.paternal_last_name,
+          maternal_last_name: meta.maternal_last_name,
           created_at: session.user.created_at,
           updated_at: session.user.updated_at,
         };
