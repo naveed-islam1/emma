@@ -46,7 +46,9 @@ export default function StepFive({
       );
 
       if (!nombre || !paterno || !materno) {
-        toast.error("Name details not found on this account. Please sign in again.");
+        toast.error(
+          "Name details not found on this account. Please sign in again.",
+        );
         return;
       }
 
