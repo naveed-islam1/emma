@@ -1,5 +1,23 @@
+/**
+ * STEP 5 — Professional ID (Cédula verification)
+ *
+ * STATUS: Temporarily skipped in signup/onboarding flow.
+ * Current flow: Specialty (step 4) → Verification (step 5) — no cedula step.
+ *
+ * TO RE-ENABLE STEP 5, edit app/on-boarding/page.tsx:
+ * 1. Uncomment: import StepFive from "@/components/common/ob-board/step-five"
+ * 2. Change totalSteps from 5 back to 6
+ * 3. Uncomment handleNextFromStepFive
+ * 4. Uncomment loading state + loading overlay JSX
+ * 5. Uncomment the "Professional ID" entry in the steps array
+ * 6. Change cedula validation back to: Yup.string().required("Professional ID is required")
+ *
+ * This file stays active — no changes needed here when re-enabling.
+ */
+
 "use client";
 
+// --- Imports: cedula API, name helpers, Supabase session, form state ---
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useVerifycedulaMutation } from "@/services/userApi";
@@ -18,6 +36,7 @@ type FormValues = {
 type Props = {
   setStep: React.Dispatch<React.SetStateAction<number>>;
   total?: number;
+  // Called after successful cedula verify — parent shows loading then goes to Verification
   handleNext: () => void;
 };
 
@@ -26,6 +45,7 @@ export default function StepFive({
   total = 5,
   handleNext: goToVerification,
 }: Props) {
+  // RTK mutation → POST https://backend.emmamatch.com/cedula/verify
   const [verifyCedula, { isLoading }] = useVerifycedulaMutation();
   const user = useSelector((state: any) => state.auth.user);
 
@@ -37,6 +57,7 @@ export default function StepFive({
     if (errors.cedula) return;
 
     try {
+      // Names from Supabase session (survives page refresh; not Zustand)
       const supabase = createClient();
       const { data } = await supabase.auth.getUser();
       const sessionUser = data?.user;
@@ -52,6 +73,7 @@ export default function StepFive({
         return;
       }
 
+      // Cedula verify API call
       const verifyRes = await verifyCedula({
         cedula: values.cedula,
         speciality: values.specialty,
@@ -66,6 +88,7 @@ export default function StepFive({
       }).unwrap();
 
       toast.success(verifyRes.message);
+      // Parent on-boarding page runs loading overlay then setStep to Verification
       goToVerification();
     } catch (err: any) {
       console.log("ERROR:", err);
@@ -80,14 +103,12 @@ export default function StepFive({
 
   return (
     <div className="space-y-6 relative h-[60vh]">
-      {/* Step Title */}
       <h2 className="text-3xl font-normal text-black">Professional ID</h2>
       <p className="text-[#4E4E4E] text-base">
         Please provide your professional license number (Cédula Profesional) for
         verification purposes.
       </p>
 
-      {/* Input */}
       <div className="max-w-md">
         <Input
           type="text"
@@ -103,7 +124,6 @@ export default function StepFive({
         />
       </div>
 
-      {/* Navigation Buttons */}
       <div className="flex justify-between absolute bottom-0 w-full">
         <Button
           variant="outline"
