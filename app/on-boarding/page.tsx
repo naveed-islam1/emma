@@ -1,8 +1,6 @@
 "use client";
-// STEP 5 SKIPPED — uncomment Loading import when re-enabling StepFive loading overlay
-// import Loading from "@/components/common/loading";
-// STEP 5 SKIPPED — uncomment below to re-enable Professional ID step
-// import StepFive from "@/components/common/ob-board/step-five";
+import Loading from "@/components/common/loading";
+import StepFive from "@/components/common/ob-board/step-five";
 import StepFour from "@/components/common/ob-board/step-four";
 import StepOne from "@/components/common/ob-board/step-one";
 import StepSix from "@/components/common/ob-board/step-six";
@@ -39,30 +37,25 @@ const validationSchema = Yup.object({
 
   specialty: Yup.string().required("specialty is required"),
 
-  // STEP 5 SKIPPED — when re-enabling StepFive, change back to:
-  // cedula: Yup.string().required("Professional ID is required"),
   cedula: Yup.string(),
 });
 
 export default function Onboarding() {
   const [step, setStep] = useState(0);
-  // STEP 5 SKIPPED — uncomment loading state when re-enabling StepFive
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const user = useSelector((state: any) => state.auth.user);
   const [CreateProfile, { isLoading }] = useCreateProfileMutation();
   const router = useRouter();
 
-  // STEP 5 SKIPPED — was 6 with Professional ID; set back to 6 when re-enabling
   const totalSteps = 5;
 
-  // STEP 5 SKIPPED — uncomment when re-enabling StepFive (shows loading after cedula verify)
-  // const handleNextFromStepFive = () => {
-  //   setLoading(true);
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //     setStep(5);
-  //   }, 2000);
-  // };
+  const handleNextFromStepFive = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setStep(5);
+    }, 2000);
+  };
 
   const steps = [
     {
@@ -81,18 +74,16 @@ export default function Onboarding() {
       name: "Specialty",
       component: <StepFour setStep={setStep} total={totalSteps} />,
     },
-    // STEP 5 SKIPPED — uncomment block below to re-enable Professional ID step
-    // Flow becomes: Specialty → Professional ID → Verification
-    // {
-    //   name: "Professional ID",
-    //   component: (
-    //     <StepFive
-    //       setStep={setStep}
-    //       total={totalSteps}
-    //       handleNext={handleNextFromStepFive}
-    //     />
-    //   ),
-    // },
+    {
+      name: "Professional ID",
+      component: (
+        <StepFive
+          setStep={setStep}
+          total={totalSteps}
+          handleNext={handleNextFromStepFive}
+        />
+      ),
+    },
     {
       name: "Verification",
       component: (
@@ -101,17 +92,15 @@ export default function Onboarding() {
     },
   ];
 
-  // Verification is last step index (4 when skipped, 5 when StepFive enabled)
   const isVerificationStep = step === totalSteps - 1;
 
   return (
     <div className="min-h-screen bg-gray-50 grid lg:grid-cols-12 relative">
-      {/* STEP 5 SKIPPED — uncomment loading overlay when re-enabling StepFive */}
-      {/* {loading && (
+      {loading && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-white">
           <Loading text="Verifying your Credentials" />
         </div>
-      )} */}
+      )}
       {isVerificationStep ? (
         <div className="block col-span-3 bg-[#8A38F5] text-white p-10">
           <Image

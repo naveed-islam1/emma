@@ -51,9 +51,6 @@ export const userApi = createApi({
             };
           }
 
-          console.log("authData", authData);
-          console.log("authData.session", authData.session);
-
           return {
             data: {
               user: authData.user,
@@ -132,7 +129,7 @@ export const userApi = createApi({
         materno: string;
       }) => {
         return {
-          url: "https://backend.emmamatch.com/cedula/verify",
+          url: "/cedula/verify",
           method: "POST",
           body: {
             cedula,
