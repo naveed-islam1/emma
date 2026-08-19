@@ -92,6 +92,12 @@ export default function StepFive({
           placeholder="Professional ID"
           value={values.cedula}
           onChange={(e) => setFieldValue("cedula", e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleNext();
+            }
+          }}
           className="w-full py-2! rounded-xl md:py-full"
         />
         <ErrorMessage

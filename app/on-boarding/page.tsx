@@ -1,6 +1,5 @@
 "use client";
 import Loading from "@/components/common/loading";
-import StepFive from "@/components/common/ob-board/step-five";
 import StepFour from "@/components/common/ob-board/step-four";
 import StepOne from "@/components/common/ob-board/step-one";
 import StepSix from "@/components/common/ob-board/step-six";
@@ -49,14 +48,6 @@ export default function Onboarding() {
 
   const totalSteps = 5;
 
-  const handleNextFromStepFive = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setStep(5);
-    }, 2000);
-  };
-
   const steps = [
     {
       name: "Whatsapp Number",
@@ -74,16 +65,7 @@ export default function Onboarding() {
       name: "Specialty",
       component: <StepFour setStep={setStep} total={totalSteps} />,
     },
-    {
-      name: "Professional ID",
-      component: (
-        <StepFive
-          setStep={setStep}
-          total={totalSteps}
-          handleNext={handleNextFromStepFive}
-        />
-      ),
-    },
+    // Step 5 is temporarily bypassed; keep components/common/ob-board/step-five.tsx for later use.
     {
       name: "Verification",
       component: (

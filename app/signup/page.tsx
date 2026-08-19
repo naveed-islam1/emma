@@ -60,10 +60,7 @@ export default function Signup() {
   };
 
   return (
-    <section
-      className="min-h-screen pt-4 bg-linear-gradient(to bottom, #ffffff, #EDE0FF)"
-      // style={{ background: "linear-gradient(to bottom, #ffffff, #EDE0FF)" }}
-    >
+    <section className="min-h-screen pt-4 bg-linear-gradient(to bottom, #ffffff, #EDE0FF)">
       <div className="max-w-7xl mx-5 md:mx-8 lg:mx-auto">
         {/* Logo */}
         <Image
