@@ -5,11 +5,14 @@ import StepOne from "@/components/common/ob-board/step-one";
 import StepSix from "@/components/common/ob-board/step-six";
 import StepThree from "@/components/common/ob-board/step-three";
 import StepTwo from "@/components/common/ob-board/step-two";
-import { useCreateProfileMutation } from "@/services/profileApi";
+import {
+  useCreateProfileMutation,
+  useLazyGetProfileQuery,
+} from "@/services/profileApi";
 import { Form, Formik } from "formik";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -44,6 +47,9 @@ export default function Onboarding() {
   const [loading, setLoading] = useState(false);
   const user = useSelector((state: any) => state.auth.user);
   const [CreateProfile, { isLoading }] = useCreateProfileMutation();
+  const [getProfile] = useLazyGetProfileQuery();
+  const [isCheckingExistingProfile, setIsCheckingExistingProfile] =
+    useState(true);
   const router = useRouter();
 
   const totalSteps = 5;
@@ -75,6 +81,43 @@ export default function Onboarding() {
   ];
 
   const isVerificationStep = step === totalSteps - 1;
+
+  useEffect(() => {
+    let isCurrent = true;
+
+    const resumeVerification = async () => {
+      if (!user?.id) {
+        if (isCurrent) setIsCheckingExistingProfile(false);
+        return;
+      }
+
+      setIsCheckingExistingProfile(true);
+      try {
+        const profile = (await getProfile(null).unwrap()) as { id?: string };
+        if (profile?.id) {
+          router.replace("/verif-plugin");
+          return;
+        }
+      } catch {
+      } finally {
+        if (isCurrent) setIsCheckingExistingProfile(false);
+      }
+    };
+
+    resumeVerification();
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [getProfile, router, user?.id]);
+
+  if (isCheckingExistingProfile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loading text="Checking your onboarding progress" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 grid lg:grid-cols-12 relative">
